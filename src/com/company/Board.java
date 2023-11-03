@@ -30,7 +30,34 @@ public class Board {
 
     public void makeMove(Move move) {
         movePiece(move.getFromRow(), move.getFromCol(), move.getToRow(), move.getToCol());
-        capturingEnemy(move.getToRow(), move.getToCol());
+        if (isKing(move.getToRow(), move.getToCol())) {
+            if (isKingSurrounded(move.getToRow(), move.getToCol())) {
+                System.out.println("Les attaquants ont gagné - Le roi est capturé !");
+                System.exit(0); // Fin du jeu
+            }
+            if (isKingEscaped(move.getToRow(), move.getToCol())) {
+                System.out.println("Les défenseurs ont gagné - Le roi s'est échappé !");
+                System.exit(0); // Fin du jeu
+            }
+        } else {
+            capturingEnemy(move.getToRow(), move.getToCol());
+        }
+    }
+
+
+    private boolean isKingSurrounded(int row, int col) {
+        return isInsideBoard(row - 1, col) && isInsideBoard(row + 1, col) &&
+                isInsideBoard(row, col - 1) && isInsideBoard(row, col + 1) &&
+                boardArray[row - 1][col] == 4 && boardArray[row + 1][col] == 4 &&
+                boardArray[row][col - 1] == 4 && boardArray[row][col + 1] == 4;
+    }
+
+    private boolean isKingEscaped(int row, int col) {
+        return (row == 0 || row == SIZE - 1) && (col == 0 || col == SIZE - 1);
+    }
+
+    private boolean isKing(int row, int col) {
+        return boardArray[row][col] == 5;
     }
 
     // Méthode pour capturer les pions ennemis
