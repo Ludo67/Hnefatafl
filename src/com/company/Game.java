@@ -38,6 +38,11 @@ public class Game {
 
     }
 
+    public void  CapturingEnemy(){ // Méthode pour capturer une pièce ennemie
+
+
+    }
+
     private static String getString() {
         Scanner scanner = new Scanner(System.in);
         System.out.println("Votre coup (ex: A5-G3) :");
