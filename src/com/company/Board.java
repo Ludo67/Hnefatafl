@@ -1,6 +1,8 @@
 package com.company;
 
 
+import java.util.ArrayList;
+
 public class Board {
 
     public final static int SIZE = 13;
@@ -46,7 +48,6 @@ public class Board {
             capturingEnemy(move.getToRow(), move.getToCol());
         }
     }
-
 
     private boolean isKingSurrounded(int row, int col) {
         return isInsideBoard(row - 1, col) && isInsideBoard(row + 1, col) &&
@@ -125,13 +126,39 @@ public class Board {
 
 
     public Move[] getAllPossibleMoves(int player) {
-        return null;
+//        ArrayList<Move> possibleMoves = new ArrayList<>();
+//
+//        for (int row = 0; row < boardArray.length; row++) {
+//            for (int col = 0; col < boardArray[0].length; col++) {
+//                int piece = boardArray[row][col];
+//
+//                int playerPiece = (Client.getPlayer() == '1')? 4: 2;
+//                if (piece == playerPiece) {
+//                    ArrayList<Move> movesForPiece = getMovesForPiece(piece, row, col);
+//                    possibleMoves.addAll(movesForPiece);
+//                }
+//            }
+//        }
+//
+//        return (Move[]) possibleMoves.toArray();
     }
 
     public void undoMove(Move move) {
     }
 
-    public boolean isGameOver() {
-       return false;
+    public boolean isGameOver(Move move){
+        if(isKingSurrounded(move.getToRow(), move.getToCol())){
+            System.out.println("Les attaquants on gagnés");
+            return true;
+        } else if(isKingEscaped(move.getToRow(), move.getToCol())){
+            System.out.println("Les défenseurs on gagnés");
+            return true;
+        } else if(getAllPossibleMoves(Client.getPlayer()).length == 0 &&
+                  getAllPossibleMoves(Client.getOpponent()).length == 0){
+            System.out.println("Partie nulle");
+            return true;
+        } else{
+            return false;
+        }
     }
 }

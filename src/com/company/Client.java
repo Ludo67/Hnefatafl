@@ -11,6 +11,12 @@ class Client {
         return player;
     }
 
+    public static Character getOpponent() {
+        return opponent;
+    }
+
+    static Character opponent = (getPlayer() == '1')? '2': '1';
+
     public static void main(String[] args) {
 
         Socket MyClient;
