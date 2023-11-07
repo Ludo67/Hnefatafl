@@ -4,6 +4,10 @@ package com.company;
 public class Board {
 
     public final static int SIZE = 13;
+    public static final int ATTACKER = 4;
+    public static final int DEFENDER = 2  ;
+    public static final int KING = 5;
+    public static final int EMPTY = 0;
     private int[][] boardArray = new int[SIZE][SIZE];
 
 
@@ -106,19 +110,29 @@ public class Board {
     private void movePiece(int fromRow, int fromCol, int toRow, int toCol) {
         int piece = boardArray[fromRow][fromCol]; // Récupère la pièce à déplacer
         // Mise à jour du plateau visuel
-        if (piece == 4) {
-            boardArray[fromRow][fromCol] = 0;
-            boardArray[toRow][toCol] = 4;
-        } else if (piece == 2) {
-            boardArray[fromRow][fromCol] = 0;
-            boardArray[toRow][toCol] = 2;
-        } else if (piece == 5) {
-            boardArray[fromRow][fromCol] = 0;
-            boardArray[toRow][toCol] = 5;
+        if (piece == ATTACKER) {
+            boardArray[fromRow][fromCol] = EMPTY;
+            boardArray[toRow][toCol] = ATTACKER;
+        } else if (piece == DEFENDER) {
+            boardArray[fromRow][fromCol] = EMPTY;
+            boardArray[toRow][toCol] = DEFENDER;
+        } else if (piece == KING) {
+            boardArray[fromRow][fromCol] = EMPTY;
+            boardArray[toRow][toCol] = KING;
         }
 
         displayBoard(this.boardArray);
     }
 
 
+    public Move[] getAllPossibleMoves(int player) {
+        return null;
+    }
+
+    public void undoMove(Move move) {
+    }
+
+    public boolean isGameOver() {
+       return false;
+    }
 }
