@@ -7,7 +7,7 @@ public class AIPlayer {
     private int player;
     private int opponent;
     private int positionsEvaluated;
-
+    private Client client;
 
 
     public AIPlayer( Board board,int player){
@@ -16,7 +16,7 @@ public class AIPlayer {
         this.player = player;
         this.opponent = (player == Board.ATTACKER) ? Board.DEFENDER : Board.ATTACKER;
         this.positionsEvaluated = 0;
-
+        this.client = new Client();
     }
     
     
@@ -78,11 +78,11 @@ public class AIPlayer {
                 int piece = board[row][col];
 
                 if (piece == '5') {
-                    score += 100;
+                    score += (client.getPlayer() == '1') ? 100 : -100;
                 } else if (piece == '4') {
-                    score += 100;
+                    score += (client.getPlayer() == '1') ? 100 : -100;
                 } else if (piece == '2') {
-                    score -= 100;
+                    score += (client.getPlayer() == '2') ? 100 : -100;
                 }
             }
         }

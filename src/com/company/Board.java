@@ -5,7 +5,7 @@ public class Board {
 
     public final static int SIZE = 13;
     public static final int ATTACKER = 4;
-    public static final int DEFENDER = 2  ;
+    public static final int DEFENDER = 2;
     public static final int KING = 5;
     public static final int EMPTY = 0;
     private int[][] boardArray = new int[SIZE][SIZE];

@@ -5,13 +5,18 @@ import java.net.*;
 
 
 class Client {
+    static Character player;
+
+    public static Character getPlayer() {
+        return player;
+    }
+
     public static void main(String[] args) {
 
         Socket MyClient;
         BufferedInputStream input;
         BufferedOutputStream output;
         int[][] board = new int[13][13];
-        Character player;
 
         try {
             MyClient = new Socket("localhost", 8888);
