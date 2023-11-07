@@ -70,8 +70,24 @@ public class AIPlayer {
         }
     }
 
-    private int evaluate() {
-return 0;
+    private int evaluate(int[][] board) {
+        int score = 0;
+
+        for (int row = 0; row < board.length; row++) {
+            for (int col = 0; col < board[row].length; col++) {
+                int piece = board[row][col];
+
+                if (piece == '5') {
+                    score += 100;
+                } else if (piece == '4') {
+                    score += 100;
+                } else if (piece == '2') {
+                    score -= 100;
+                }
+            }
+        }
+
+        return score;
     }
 
 }

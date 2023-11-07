@@ -12,7 +12,6 @@ public class Board {
 
 
     public Board(String config) {
-
         this.boardArray = initBoard(config);
         displayBoard(this.boardArray);
     }
