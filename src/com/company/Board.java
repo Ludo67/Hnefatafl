@@ -2,6 +2,7 @@ package com.company;
 
 
 import java.util.ArrayList;
+import java.util.Stack;
 
 public class Board {
 
@@ -11,6 +12,7 @@ public class Board {
     public static final int KING = 5;
     public static final int EMPTY = 0;
     private int[][] boardArray = new int[SIZE][SIZE];
+    public Stack<Move> history = new Stack<>();
 
 
     public Board(String config) {
@@ -34,6 +36,7 @@ public class Board {
     }
 
     public void makeMove(Move move) {
+        history.push(new Move(move.getFromRow(), move.getFromCol(), move.getToRow(), move.getToCol()));
         movePiece(move.getFromRow(), move.getFromCol(), move.getToRow(), move.getToCol());
         if (isKing(move.getToRow(), move.getToCol())) {
             if (isKingSurrounded(move.getToRow(), move.getToCol())) {
@@ -170,6 +173,8 @@ public class Board {
     }
 
     public void undoMove(Move move) {
+        Move lastMove = history.pop();
+        movePiece(lastMove.getFromRow(), lastMove.getFromCol(), lastMove.getToRow(), lastMove.getToCol());
     }
 
     public boolean isGameOver(Move move){
