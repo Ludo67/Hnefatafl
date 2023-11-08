@@ -75,7 +75,7 @@ public class Board {
         checkAndCapture(toRow, toCol, 0, 1, currentPiece);  // Droite
     }
 
-    private void checkAndCapture(int row, int col, int dRow, int dCol, int currentPiece) {
+    private boolean checkAndCapture(int row, int col, int dRow, int dCol, int currentPiece) {
         int enemyPiece = (currentPiece == 4) ? 2 : 4;  // Si currentPiece est un attaquant (4), l'ennemi est un défenseur (2), sinon l'inverse.
 
         int oppositeRow = row + 2 * dRow;
@@ -89,7 +89,10 @@ public class Board {
                 // Capturer l'ennemi
                 boardArray[middleRow][middleCol] = 0;
             }
+
+            return true;
         }
+        return false;
     }
 
     private boolean isInsideBoard(int row, int col) {
@@ -126,21 +129,44 @@ public class Board {
 
 
     public Move[] getAllPossibleMoves(int player) {
-//        ArrayList<Move> possibleMoves = new ArrayList<>();
-//
-//        for (int row = 0; row < boardArray.length; row++) {
-//            for (int col = 0; col < boardArray[0].length; col++) {
-//                int piece = boardArray[row][col];
-//
-//                int playerPiece = (Client.getPlayer() == '1')? 4: 2;
-//                if (piece == playerPiece) {
-//                    ArrayList<Move> movesForPiece = getMovesForPiece(piece, row, col);
-//                    possibleMoves.addAll(movesForPiece);
-//                }
-//            }
-//        }
-//
-//        return (Move[]) possibleMoves.toArray();
+        ArrayList<Move> possibleMoves = new ArrayList<>();
+
+        for (int row = 0; row < boardArray.length; row++) {
+            for (int col = 0; col < boardArray[0].length; col++) {
+                int piece = boardArray[row][col];
+
+                int playerPiece = (Client.getPlayer() == '1')? 4: 2;
+                if (piece == playerPiece) {
+                    ArrayList<Move> movesForPiece = getMovesForPiece(piece, row, col);
+                    possibleMoves.addAll(movesForPiece);
+                }
+            }
+        }
+
+        return (Move[]) possibleMoves.toArray();
+    }
+
+    private ArrayList<Move> getMovesForPiece(int piece, int row, int col) {
+        ArrayList<Move> moves = new ArrayList<>();
+        int player = Client.getPlayer();
+
+        // Déplacements vers le haut
+        if (isInsideBoard(row - 1, col) && checkAndCapture(row - 1, col,-1,0, player)) {
+            moves.add(new Move(row, col, row - 1, col));
+        }
+        // Déplacements vers le bas
+        if (isInsideBoard(row + 1, col) && checkAndCapture(row - 1, col,1,0, player)) {
+            moves.add(new Move(row, col, row + 1, col));
+        }
+        // Déplacements vers la gauche
+        if (isInsideBoard(row, col - 1) && checkAndCapture(row - 1, col,0,-1, player)) {
+            moves.add(new Move(row, col, row, col - 1));
+        }
+        // Déplacements vers la droite
+        if (isInsideBoard(row, col + 1) && checkAndCapture(row - 1, col,0,1, player)) {
+            moves.add(new Move(row, col, row, col + 1));
+        }
+        return moves;
     }
 
     public void undoMove(Move move) {
@@ -148,10 +174,10 @@ public class Board {
 
     public boolean isGameOver(Move move){
         if(isKingSurrounded(move.getToRow(), move.getToCol())){
-            System.out.println("Les attaquants on gagnés");
+            System.out.println("Les attaquants ont gagnés");
             return true;
         } else if(isKingEscaped(move.getToRow(), move.getToCol())){
-            System.out.println("Les défenseurs on gagnés");
+            System.out.println("Les défenseurs ont gagnés");
             return true;
         } else if(getAllPossibleMoves(Client.getPlayer()).length == 0 &&
                   getAllPossibleMoves(Client.getOpponent()).length == 0){
