@@ -37,9 +37,10 @@ public class AIPlayer {
     }
 
     private int minimax(int maxDepth, int minValue, int maxValue, boolean b) {
-        if (maxDepth == 0 || board.isGameOver()) {
+        //a revoir
+        if (maxDepth == 0 || board.isGameOver(board.history.lastElement())) {
             positionsEvaluated++;
-            return evaluate();
+            return evaluate(board.getBoardArray());
         }
         if (b) {
             int bestScore = Integer.MIN_VALUE;

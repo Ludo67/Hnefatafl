@@ -15,7 +15,18 @@ class Client {
         return opponent;
     }
 
-    static Character opponent = (getPlayer() == '1')? '2': '1';
+    static Character opponent;
+
+    public static void setMove(String move) {
+        Client.move = move;
+    }
+
+    public static void setPlayer(Character player) {
+        Client.player = player;
+    }
+
+
+    static String move;
 
     public static void main(String[] args) {
 
@@ -26,7 +37,6 @@ class Client {
 
         try {
             MyClient = new Socket("localhost", 8888);
-
             input    = new BufferedInputStream(MyClient.getInputStream());
             output   = new BufferedOutputStream(MyClient.getOutputStream());
             BufferedReader console = new BufferedReader(new InputStreamReader(System.in));
@@ -44,7 +54,8 @@ class Client {
                     input.read(aBuffer,0,size);
                     String s = new String(aBuffer).trim();
                     System.out.println(s);
-                    player = s.charAt(0);
+                    setPlayer('1');
+                    opponent = '2';
                     String[] boardValues;
                     boardValues = s.split(" ");
                     int x=0,y=0;
@@ -73,7 +84,8 @@ class Client {
                     input.read(aBuffer,0,size);
                     String s = new String(aBuffer).trim();
                     System.out.println(s);
-                    player = s.charAt(0);
+                    setPlayer('2');
+                    opponent = '1';
                     String[] boardValues;
                     boardValues = s.split(" ");
                     int x=0,y=0;
@@ -100,8 +112,9 @@ class Client {
                     String s = new String(aBuffer);
                     System.out.println("Dernier coup :"+ s);
                     System.out.println("Entrez votre coup : ");
-                    String move = null;
-                    move = console.readLine();
+//                    move = null;
+//
+//                    move = console.readLine();
                     output.write(move.getBytes(),0,move.length());
                     output.flush();
 
@@ -109,8 +122,8 @@ class Client {
                 // Le dernier coup est invalide
                 if(cmd == '4'){
                     System.out.println("Coup invalide, entrez un nouveau coup : ");
-                    String move = null;
-                    move = console.readLine();
+//                    String move = null;
+//                    move = console.readLine();
                     output.write(move.getBytes(),0,move.length());
                     output.flush();
 

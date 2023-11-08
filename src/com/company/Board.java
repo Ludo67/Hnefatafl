@@ -38,18 +38,18 @@ public class Board {
     public void makeMove(Move move) {
         history.push(new Move(move.getFromRow(), move.getFromCol(), move.getToRow(), move.getToCol()));
         movePiece(move.getFromRow(), move.getFromCol(), move.getToRow(), move.getToCol());
-        if (isKing(move.getToRow(), move.getToCol())) {
-            if (isKingSurrounded(move.getToRow(), move.getToCol())) {
-                System.out.println("Les attaquants ont gagné - Le roi est capturé !");
-                System.exit(0); // Fin du jeu
-            }
-            if (isKingEscaped(move.getToRow(), move.getToCol())) {
-                System.out.println("Les défenseurs ont gagné - Le roi s'est échappé !");
-                System.exit(0); // Fin du jeu
-            }
-        } else {
-            capturingEnemy(move.getToRow(), move.getToCol());
-        }
+//        if (isKing(move.getToRow(), move.getToCol())) {
+//            if (isKingSurrounded(move.getToRow(), move.getToCol())) {
+//                System.out.println("Les attaquants ont gagné - Le roi est capturé !");
+//                System.exit(0); // Fin du jeu
+//            }
+//            if (isKingEscaped(move.getToRow(), move.getToCol())) {
+//                System.out.println("Les défenseurs ont gagné - Le roi s'est échappé !");
+//                System.exit(0); // Fin du jeu
+//            }
+//        } else {
+//            capturingEnemy(move.getToRow(), move.getToCol());
+//        }
     }
 
     private boolean isKingSurrounded(int row, int col) {
@@ -67,11 +67,9 @@ public class Board {
         return boardArray[row][col] == 5;
     }
 
-    // Méthode pour capturer les pions ennemis
     public void capturingEnemy(int toRow, int toCol) {
         int currentPiece = boardArray[toRow][toCol];
 
-        // Vérifiez les captures dans toutes les directions
         checkAndCapture(toRow, toCol, -1, 0, currentPiece); // Haut
         checkAndCapture(toRow, toCol, 1, 0, currentPiece);  // Bas
         checkAndCapture(toRow, toCol, 0, -1, currentPiece); // Gauche
@@ -79,12 +77,10 @@ public class Board {
     }
 
     private boolean checkAndCapture(int row, int col, int dRow, int dCol, int currentPiece) {
-        int enemyPiece = (currentPiece == 4) ? 2 : 4;  // Si currentPiece est un attaquant (4), l'ennemi est un défenseur (2), sinon l'inverse.
-
+        int enemyPiece = (currentPiece == 4) ? 2 : 4;
         int oppositeRow = row + 2 * dRow;
         int oppositeCol = col + 2 * dCol;
 
-        // Vérifiez si l'opposé est dans les limites et s'il s'agit d'un ennemi, et s'il est encerclé
         if (isInsideBoard(oppositeRow, oppositeCol) && boardArray[oppositeRow][oppositeCol] == currentPiece) {
             int middleRow = row + dRow;
             int middleCol = col + dCol;
@@ -102,20 +98,23 @@ public class Board {
         return row >= 0 && row < SIZE && col >= 0 && col < SIZE;
     }
 
-    public void displayBoard(int[][] board){
+    public String displayBoard(int[][] board){
+        String move = "";
+
         for (int i = 0; i < 13; i++) {
             for (int j = 0; j < 13; j++) {
-                System.out.print(this.boardArray[i][j] + " ");
+                move += (board[i][j] + " ");
             }
-            System.out.println();
+            move += "";
         }
+
+        return move;
     }
 
 
-    // Méthode pour déplacer une pièce
     private void movePiece(int fromRow, int fromCol, int toRow, int toCol) {
-        int piece = boardArray[fromRow][fromCol]; // Récupère la pièce à déplacer
-        // Mise à jour du plateau visuel
+        int piece = boardArray[fromRow][fromCol];
+
         if (piece == ATTACKER) {
             boardArray[fromRow][fromCol] = EMPTY;
             boardArray[toRow][toCol] = ATTACKER;
@@ -126,8 +125,7 @@ public class Board {
             boardArray[fromRow][fromCol] = EMPTY;
             boardArray[toRow][toCol] = KING;
         }
-
-        displayBoard(this.boardArray);
+        Client.setMove(displayBoard(this.boardArray));
     }
 
 
