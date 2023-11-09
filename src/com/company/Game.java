@@ -12,9 +12,7 @@ public class Game {
         this.board = new Board(config);
     }
 
-
     private void playerMove() {
-
         String move = getString();
 
         String[] parts = move.split("-");
@@ -33,9 +31,22 @@ public class Game {
         board.makeMove(playerMove); // Applique le mouvement du joueur
     }
 
+    public String aiMove() {
+        AIPlayer aiPlayer = new AIPlayer(board, Client.player);
+        Move bestMove = aiPlayer.findBestMove();
+        if (bestMove != null && isValidMove(bestMove.getFromRow(), bestMove.getFromCol(), bestMove.getToRow(), bestMove.getToCol())) {
+            board.makeMove(bestMove);
+            //board.displayBoard(board.getBoardArray());
+            if (board.isGameOver(bestMove)) {
+                System.out.println("game is over!");
+            }
+        }
+
+        return bestMove != null ? bestMove.toString() : "move is null";
+    }
+
     public boolean isValidMove(int fromRow, int fromCol, int toRow, int toCol) {
         return toRow >= 0 && toRow < 13 && toCol >= 0 && toCol < 13 && board.getBoardArray()[fromRow][fromCol] != 0 && board.getBoardArray()[toRow][toCol] == 0;
-
     }
 
     public void  CapturingEnemy(){ // Méthode pour capturer une pièce ennemie

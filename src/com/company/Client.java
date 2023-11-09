@@ -6,6 +6,9 @@ import java.net.*;
 
 class Client {
     static Character player;
+    private static Game game;
+    private static String boardToPlay;
+    static String s;
 
     public static Character getPlayer() {
         return player;
@@ -17,8 +20,8 @@ class Client {
 
     static Character opponent;
 
-    public static void setMove(String move) {
-        Client.move = move;
+    public static void setBoard(String s) {
+        Client.boardToPlay = s;
     }
 
     public static void setPlayer(Character player) {
@@ -52,7 +55,7 @@ class Client {
                     int size = input.available();
                     //System.out.println("size " + size);
                     input.read(aBuffer,0,size);
-                    String s = new String(aBuffer).trim();
+                    s = new String(aBuffer).trim();
                     System.out.println(s);
                     setPlayer('1');
                     opponent = '2';
@@ -69,8 +72,10 @@ class Client {
                     }
 
                     System.out.println("Nouvelle partie! Vous jouer blanc, entrez votre premier coup : ");
-                    String move = null;
-                    move = console.readLine();
+
+                    game = new Game(s);
+                    move = game.aiMove();
+                    System.out.println("HELLOWORLD: " + move);
                     output.write(move.getBytes(),0,move.length());
                     output.flush();
                 }
@@ -82,7 +87,7 @@ class Client {
                     int size = input.available();
                     //System.out.println("size " + size);
                     input.read(aBuffer,0,size);
-                    String s = new String(aBuffer).trim();
+                    s = new String(aBuffer).trim();
                     System.out.println(s);
                     setPlayer('2');
                     opponent = '1';
@@ -97,6 +102,13 @@ class Client {
                             y++;
                         }
                     }
+
+                    game = new Game(s);
+                    move = game.aiMove();
+
+                    System.out.println("HELLOWORLD: " + boardToPlay);
+                    output.write(boardToPlay.getBytes(),0, 13);
+                    output.flush();
                 }
 
 
@@ -109,13 +121,15 @@ class Client {
                     System.out.println("size :" + size);
                     input.read(aBuffer,0,size);
 
-                    String s = new String(aBuffer);
+                    s = new String(aBuffer);
                     System.out.println("Dernier coup :"+ s);
                     System.out.println("Entrez votre coup : ");
 //                    move = null;
 //
 //                    move = console.readLine();
-                    output.write(move.getBytes(),0,move.length());
+                    move = game.aiMove();
+                    System.out.println("HELLOWORLD: " + boardToPlay);
+                    output.write(boardToPlay.getBytes(),0, 13);
                     output.flush();
 
                 }
@@ -124,9 +138,10 @@ class Client {
                     System.out.println("Coup invalide, entrez un nouveau coup : ");
 //                    String move = null;
 //                    move = console.readLine();
-                    output.write(move.getBytes(),0,move.length());
+                    move = game.aiMove();
+                    System.out.println("HELLOWORLD: " + boardToPlay);
+                    output.write(boardToPlay.getBytes(),0, board.length);
                     output.flush();
-
                 }
                 // La partie est terminée
                 if(cmd == '5'){

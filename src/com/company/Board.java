@@ -11,7 +11,7 @@ public class Board {
     public static final int DEFENDER = 2;
     public static final int KING = 5;
     public static final int EMPTY = 0;
-    private int[][] boardArray = new int[SIZE][SIZE];
+    private int[][] boardArray;
     public Stack<Move> history = new Stack<>();
 
 
@@ -99,16 +99,19 @@ public class Board {
     }
 
     public String displayBoard(int[][] board){
-        String move = "";
+        StringBuilder move = new StringBuilder();
 
         for (int i = 0; i < 13; i++) {
             for (int j = 0; j < 13; j++) {
-                move += (board[i][j] + " ");
+                int value = board[i][j];
+                if(value == 65520){
+                    move.append("2").append(" ");
+                }else{
+                    move.append(board[i][j]).append(" ");
+                }
             }
-            move += "";
         }
-
-        return move;
+        return move.toString();
     }
 
 
@@ -125,54 +128,73 @@ public class Board {
             boardArray[fromRow][fromCol] = EMPTY;
             boardArray[toRow][toCol] = KING;
         }
-        Client.setMove(displayBoard(this.boardArray));
+
+        Client.setBoard(displayBoard(boardArray));
     }
 
 
-    public Move[] getAllPossibleMoves(int player) {
-        ArrayList<Move> possibleMoves = new ArrayList<>();
-
-        for (int row = 0; row < boardArray.length; row++) {
-            for (int col = 0; col < boardArray[0].length; col++) {
-                int piece = boardArray[row][col];
-
-                int playerPiece = (Client.getPlayer() == '1')? 4: 2;
-                if (piece == playerPiece) {
-                    ArrayList<Move> movesForPiece = getMovesForPiece(piece, row, col);
-                    possibleMoves.addAll(movesForPiece);
+    public ArrayList<Move> getAllPossibleMoves(int player) {
+        ArrayList<Move> moves = new ArrayList<>();
+        int playerPiece = (player == '1')? 4 : 2;
+        for (int row = 0; row < SIZE; row++) {
+            for (int col = 0; col < SIZE; col++) {
+                if (boardArray[row][col] == playerPiece || (playerPiece == DEFENDER && isKing(row, col))) {
+                    moves.addAll(getMovesInDirection(row, col, -1, 0)); // Up
+                    moves.addAll(getMovesInDirection(row, col, 1, 0));  // Down
+                    moves.addAll(getMovesInDirection(row, col, 0, -1)); // Left
+                    moves.addAll(getMovesInDirection(row, col, 0, 1));  // Right
+                   // System.out.println("TEST: " + moves.size());
                 }
             }
-        }
-
-        return (Move[]) possibleMoves.toArray();
-    }
-
-    private ArrayList<Move> getMovesForPiece(int piece, int row, int col) {
-        ArrayList<Move> moves = new ArrayList<>();
-        int player = Client.getPlayer();
-
-        // Déplacements vers le haut
-        if (isInsideBoard(row - 1, col) && checkAndCapture(row - 1, col,-1,0, player)) {
-            moves.add(new Move(row, col, row - 1, col));
-        }
-        // Déplacements vers le bas
-        if (isInsideBoard(row + 1, col) && checkAndCapture(row - 1, col,1,0, player)) {
-            moves.add(new Move(row, col, row + 1, col));
-        }
-        // Déplacements vers la gauche
-        if (isInsideBoard(row, col - 1) && checkAndCapture(row - 1, col,0,-1, player)) {
-            moves.add(new Move(row, col, row, col - 1));
-        }
-        // Déplacements vers la droite
-        if (isInsideBoard(row, col + 1) && checkAndCapture(row - 1, col,0,1, player)) {
-            moves.add(new Move(row, col, row, col + 1));
         }
         return moves;
     }
 
-    public void undoMove(Move move) {
+    private ArrayList<Move> getMovesInDirection(int row, int col, int dRow, int dCol) {
+        ArrayList<Move> moves = new ArrayList<>();
+        int currentRow = row + dRow;
+        int currentCol = col + dCol;
+
+        while (isInsideBoard(currentRow, currentCol)) {
+            moves.add(new Move(row, col, currentRow, currentCol));
+            currentRow += dRow;
+            currentCol += dCol;
+        }
+        return moves;
+    }
+
+//    private ArrayList<Move> getMovesForPiece(int row, int col) {
+//        ArrayList<Move> moves = new ArrayList<>();
+//        int player = Client.getPlayer();
+//
+//        // Déplacements vers le haut
+//        if (isInsideBoard(row - 1, col) && checkAndCapture(row - 1, col,-1,0, player)) {
+//            moves.add(new Move(row, col, row - 1, col));
+//        }
+//        // Déplacements vers le bas
+//        if (isInsideBoard(row + 1, col) && checkAndCapture(row - 1, col,1,0, player)) {
+//            moves.add(new Move(row, col, row + 1, col));
+//        }
+//        // Déplacements vers la gauche
+//        if (isInsideBoard(row, col - 1) && checkAndCapture(row - 1, col,0,-1, player)) {
+//            moves.add(new Move(row, col, row, col - 1));
+//        }
+//        // Déplacements vers la droite
+//        if (isInsideBoard(row, col + 1) && checkAndCapture(row - 1, col,0,1, player)) {
+//            moves.add(new Move(row, col, row, col + 1));
+//        }
+//        return moves;
+//    }
+
+    public void undoMove() {
         Move lastMove = history.pop();
         movePiece(lastMove.getFromRow(), lastMove.getFromCol(), lastMove.getToRow(), lastMove.getToCol());
+    }
+
+    public Board clone(String s){
+        Board clone = new Board(s);
+        clone.boardArray = this.boardArray.clone();
+        return clone;
     }
 
     public boolean isGameOver(Move move){
@@ -182,8 +204,8 @@ public class Board {
         } else if(isKingEscaped(move.getToRow(), move.getToCol())){
             System.out.println("Les défenseurs ont gagnés");
             return true;
-        } else if(getAllPossibleMoves(Client.getPlayer()).length == 0 &&
-                  getAllPossibleMoves(Client.getOpponent()).length == 0){
+        } else if(getAllPossibleMoves(Client.player).size() == 0 &&
+                  getAllPossibleMoves(Client.player).size() == 0){
             System.out.println("Partie nulle");
             return true;
         } else{
